@@ -10,8 +10,7 @@ import SwiftUI
 @main
 struct RickAndMortyWorldWikiApp: App {
     var body: some Scene {
-        WindowGroup {
-            ContentView()
+        WindowGroup {  
         }
     }
 }
