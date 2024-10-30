@@ -9,12 +9,12 @@ import SwiftUICore
 import SwiftUI
 
 struct MenuView: View {
-    
     var body: some View {
         NavigationStack {
             VStack (spacing: 50) {
+                Image("RickAndMortyTextImage")
                 NavigationLink {
-                    
+                    CharactersView()
                 } label: {
                     Text("Characters")
                 }
@@ -35,6 +35,12 @@ struct MenuView: View {
             .padding(60)
             .navigationBarTitleDisplayMode(.inline)
         }
-        
+    }
+}
+
+
+struct LoadingView_Previews: PreviewProvider {
+    static var previews: some View {
+        MenuView()
     }
 }
