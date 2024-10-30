@@ -10,20 +10,29 @@ import Alamofire
 class NetworkManager {
     static let shared = NetworkManager()
     
-    func fetchCharacters(completion: @escaping ([CharacterModel]?, Error?) -> Void) {
-        let url = "https://rickandmortyapi.com/api/character/"
+    func fetchCharacters(page: Int, completion: @escaping ([CharacterModel]?, Error?, Int?) -> Void) {
+        let url = "https://rickandmortyapi.com/api/character?page=\(page)"
         
         AF.request(url).responseDecodable(of: CharacterResponse.self) { response in
             switch response.result {
             case .success(let characterResponse):
-                completion(characterResponse.results, nil)
+                completion(characterResponse.results, nil, characterResponse.info.pages)
             case .failure(let error):
-                completion(nil, error)
+                completion(nil, error, nil)
             }
         }
     }
 }
 
-struct CharacterResponse: Codable {
+struct ResponseInfo: Decodable {
+    var count: Int
+    var pages: Int
+    var next: String?
+    var prev: String?
+}
+
+struct CharacterResponse: Decodable {
+    var info: ResponseInfo
     var results: [CharacterModel]
 }
+
