@@ -4,7 +4,7 @@
 //
 //  Created by Радэль Зубаиров on 29.10.2024.
 //
-struct CharacterModel: Identifiable, Codable{
+struct CharacterModel: Identifiable, Decodable{
     var id: Int
     var name: String
     var status: String

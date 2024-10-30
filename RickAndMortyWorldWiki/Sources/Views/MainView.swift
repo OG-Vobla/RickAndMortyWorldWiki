@@ -10,7 +10,6 @@ import SwiftUICore
 struct MainView: View {
     var body: some View {
         VStack{
-            Image("RickAndMortyTextImage")
             MenuView()
         }
     }
