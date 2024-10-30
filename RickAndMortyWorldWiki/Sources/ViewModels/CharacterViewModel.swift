@@ -13,7 +13,7 @@ import SwiftUICore
 public class CharacterListViewModel: ObservableObject {
     @Published var isLoading = true
     @Published var characters: [CharacterModel]? = []
-    private var page: Int = 1
+    public var page: Int = 1
     private var pages: Int = 1
     
     
@@ -37,18 +37,24 @@ public class CharacterListViewModel: ObservableObject {
     }
     
     func nextPage() {
-        page += 1
+        self.page += 1
         
-        if page > pages {
-            page = pages
+        if self.page > pages {
+            self.page = pages
+        }
+        else {
+            fetchCharacters()
         }
     }
     
     func backPage() {
-        page -= 1
+        self.page -= 1
         
-        if page < 0 {
-            page = 0
+        if self.page < 1 {
+            self.page = 1
+        }
+        else {
+            fetchCharacters()
         }
     }
 }
