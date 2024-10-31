@@ -10,8 +10,10 @@ import Alamofire
 class NetworkManager {
     static let shared = NetworkManager()
     
-    func fetchCharacters(page: Int, completion: @escaping ([CharacterModel]?, Error?, Int?) -> Void) {
-        let url = "https://rickandmortyapi.com/api/character?page=\(page)"
+    func fetchCharacters(page: Int, filters: [Filter], completion: @escaping ([CharacterModel]?, Error?, Int?) -> Void) {
+        var url = "https://rickandmortyapi.com/api/character?page=\(page)"
+        
+        filters.forEach { url += "&\($0.filterName.lowercased())=\($0.filterSelected)" }
         
         AF.request(url).responseDecodable(of: CharacterResponse.self) { response in
             switch response.result {
