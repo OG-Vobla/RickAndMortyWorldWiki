@@ -13,7 +13,7 @@ import SwiftUICore
 public class CharacterListViewModel: ObservableObject {
     @Published var isLoading = true
     @Published var characters: [CharacterModel]? = []
-    @Published var errorMessage: Error?
+    @Published var errorMessage: Error? = nil
     public var page: Int = 1
     private var pages: Int = 1
     var filters: FilterProtocol?

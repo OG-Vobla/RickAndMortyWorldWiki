@@ -10,6 +10,8 @@ import SwiftUI
 
 struct CharactersView: View {
     @ObservedObject private var characterListViewModel: CharacterListViewModel = CharacterListViewModel()
+    @State private var showingCredits: Bool = false
+    @State private var selectedCharacter: CharacterModel?
     private var filters: [FilterProtocol.Type] = [GenderFilter.self, SpeciesFilter.self, StatusFilter.self]
     
     var body: some View {
@@ -45,6 +47,15 @@ struct CharactersView: View {
                             VStack (spacing: 50) {
                                 ForEach(characterListViewModel.characters ?? [], id: \.id) { character in
                                     CharacterView(character: character)
+                                        .onTapGesture {
+                                            selectedCharacter = character
+                                            showingCredits.toggle()
+                                        }
+                                        .sheet(isPresented: $showingCredits) {
+                                            if let selectedCharacter = selectedCharacter {
+                                                CharacterInformationView(character: selectedCharacter)
+                                            }
+                                        }
                                 }
                             }
                             .padding(10)
