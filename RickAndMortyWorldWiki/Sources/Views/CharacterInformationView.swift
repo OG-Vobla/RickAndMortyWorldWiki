@@ -9,6 +9,7 @@ import SwiftUICore
 import SwiftUI
 
 struct CharacterInformationView: View {
+    @ObservedObject private var characterInfoViewModel: CharacterInfoViewModel = CharacterInfoViewModel()
     var character: CharacterModel
     
     var body: some View {
@@ -65,11 +66,15 @@ struct CharacterInformationView: View {
                     }
                     .padding()
                     List {
-                        ForEach(character.episode, id: \.self) { episode in
-                            Section(header: Text(episode)) {
-                                Text(episode)
+                        ForEach(characterInfoViewModel.episode, id: \.id) { episode in
+                            Section(header: Text("Episode number: \(episode.episode)")) {
+                                Text("Episode name: \(episode.name)")
                             }
                         }
+                    }
+                    .onAppear {
+                        characterInfoViewModel.episodeUrls = character.episode
+                        characterInfoViewModel.fetchEpisodes()
                     }
                 }
                 .frame(height: 400)

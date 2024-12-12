@@ -28,6 +28,20 @@ class NetworkManager {
             }
         }
     }
+    
+    func getEpisodeInfo(episodeUrl: [String], completion: @escaping (EpisodeModel?, Error?) -> Void) {
+        episodeUrl.forEach { url in
+            AF.request(url).responseDecodable(of: EpisodeModel.self) { response in
+                switch response.result {
+                case .success(let episode):
+                    completion(episode, nil)
+                case .failure(let error):
+                    completion(nil, error)
+                }
+            }
+        }
+        
+    }
 }
 
 struct ResponseInfo: Decodable {

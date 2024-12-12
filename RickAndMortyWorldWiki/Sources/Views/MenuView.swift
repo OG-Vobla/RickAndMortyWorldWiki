@@ -19,7 +19,7 @@ struct MenuView: View {
                     Text("Characters")
                 }
                 NavigationLink {
-                    
+                    LocationsView()
                 } label: {
                     Text("Locations")
                 }
