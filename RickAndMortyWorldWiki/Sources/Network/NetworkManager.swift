@@ -40,7 +40,32 @@ class NetworkManager {
                 }
             }
         }
+    }
+    
+    func fetchLocations(page: Int, completion: @escaping ([LocationInfoModel]?, Error?, Int?) -> Void) {
+        let url = "https://rickandmortyapi.com/api/location?page=\(page)"
         
+        AF.request(url).responseDecodable(of: LocationResponse.self) { response in
+            switch response.result {
+            case .success(let locationResponse):
+                completion(locationResponse.results, nil, locationResponse.info.pages)
+            case .failure(let error):
+                completion(nil, error, nil)
+            }
+        }
+    }
+    
+    func getCharacterInfo(characterUrl: [String], completion: @escaping (CharacterModel?, Error?) -> Void) {
+        characterUrl.forEach { url in
+            AF.request(url).responseDecodable(of: CharacterModel.self) { response in
+                switch response.result {
+                case .success(let character):
+                    completion(character, nil)
+                case .failure(let error):
+                    completion(nil, error)
+                }
+            }
+        }
     }
 }
 
@@ -56,3 +81,7 @@ struct CharacterResponse: Decodable {
     var results: [CharacterModel]
 }
 
+struct LocationResponse: Decodable {
+    var info: ResponseInfo
+    var results: [LocationInfoModel]
+}

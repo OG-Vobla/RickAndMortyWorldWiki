@@ -9,53 +9,47 @@ import SwiftUICore
 import SwiftUI
 
 struct LocationsView: View {
-    @ObservedObject private var characterListViewModel: CharacterListViewModel = CharacterListViewModel()
+    @ObservedObject private var locationViewModel: LocationViewModel = LocationViewModel()
     @State private var showingCredits: Bool = false
-    @State private var selectedCharacter: CharacterModel?
-    private var filters: [FilterProtocol.Type] = [GenderFilter.self, SpeciesFilter.self, StatusFilter.self]
+    @State private var selectedLocation: LocationInfoModel?
     
     var body: some View {
         HStack {
             Button("<") {
-                characterListViewModel.backPage()
+                locationViewModel.backPage()
             }
-            Text("\(characterListViewModel.page)")
+            Text("\(locationViewModel.page)")
             Button(">") {
-                characterListViewModel.nextPage()
+                locationViewModel.nextPage()
             }
         }
         .frame(alignment: .top)
         VStack {
-            HStack {
-                ForEach((0..<filters.count), id: \.self) {
-                    PickerView(characterListViewModel: characterListViewModel, filterType: filters[$0])
-                }
-            }
             ZStack(alignment: .top) {
-                if characterListViewModel.isLoading {
+                if locationViewModel.isLoading {
                     ProgressView()
                 }
                 else {
-                    if characterListViewModel.characters == nil {
-                        Text("No character yet")
+                    if locationViewModel.locations == nil {
+                        Text("No locations yet")
                     }
-                    else if characterListViewModel.errorMessage != nil {
-                        Text(characterListViewModel.errorMessage!.localizedDescription)
+                    else if locationViewModel.errorMessage != nil {
+                        Text(locationViewModel.errorMessage!.localizedDescription)
                     }
                     else {
                         ScrollView {
                             VStack (spacing: 50) {
-                                ForEach(characterListViewModel.characters ?? [], id: \.id) { character in
-                                    CharacterView(character: character)
-                                        .onTapGesture {
-                                            selectedCharacter = character
-                                            showingCredits.toggle()
+                                ForEach(locationViewModel.locations ?? [], id: \.id) { location in
+                                    LocationView(location: location)
+                                    .onTapGesture {
+                                        selectedLocation = location
+                                        showingCredits.toggle()
+                                    }
+                                    .sheet(isPresented: $showingCredits) {
+                                        if let selectedLocation = selectedLocation {
+                                            LocationInformationView(location: selectedLocation)
                                         }
-                                        .sheet(isPresented: $showingCredits) {
-                                            if let selectedCharacter = selectedCharacter {
-                                                CharacterInformationView(character: selectedCharacter)
-                                            }
-                                        }
+                                    }
                                 }
                             }
                             .padding(10)
@@ -64,28 +58,9 @@ struct LocationsView: View {
                 }
             }
             .onAppear() {
-               characterListViewModel.fetchCharacters()
+                locationViewModel.fetchLocations()
             }
             .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .center)
-            
-        }
-    }
-    public struct PickerView: View {
-        @ObservedObject public var characterListViewModel: CharacterListViewModel
-        @State public var selectedFilter: String? = nil
-        
-        var filterType: FilterProtocol.Type
-        var body: some View{ Picker("Select \(filterType.filterName)", selection: $selectedFilter) {
-            Text("All").tag(nil as String?)
-            ForEach(filterType.filterVariants, id: \.self) { filterVariant in
-                Text(filterVariant).tag(filterVariant)
-            }
-        }
-        .pickerStyle(MenuPickerStyle())
-        .onChange(of: selectedFilter) {
-                characterListViewModel.filterCharacters(
-                    selectedFilter: Filter(filterName: filterType.filterName, filterSelected: selectedFilter))
-            }
         }
     }
 }
