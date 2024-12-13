@@ -24,7 +24,7 @@ struct MenuView: View {
                     Text("Locations")
                 }
                 NavigationLink {
-                    
+                    EpisodesView()
                 } label: {
                     Text("Episodes")
                 }

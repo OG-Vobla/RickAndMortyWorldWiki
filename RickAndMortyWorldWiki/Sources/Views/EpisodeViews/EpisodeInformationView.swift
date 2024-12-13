@@ -1,28 +1,28 @@
 //
-//  LocationInformationView.swift
+//  EpisodeInformationView.swift
 //  RickAndMortyWorldWiki
 //
-//  Created by Радэль Зубаиров on 12.12.2024.
+//  Created by Радэль Зубаиров on 13.12.2024.
 //
 
 import SwiftUICore
 import SwiftUI
 
-struct LocationInformationView: View {
-    @ObservedObject private var locationViewModel: LocationViewModel = LocationViewModel()
-    var location: LocationInfoModel = LocationInfoModel(id: 0, name: "", type: "", dimension: "", residents: [], url: "", created: "")
+struct EpisodeInformationView: View {
+    @ObservedObject private var episodeViewModel: EpisodeViewModel = EpisodeViewModel()
+    var episode: EpisodeModel = EpisodeModel(id: 0, name: "", air_date: "", episode: "", characters: [], url: "", created: "")
     
     var body: some View {
         ScrollView {
             VStack(alignment: .center) {
                 VStack {
-                    Image("WorldPng")
+                    Image("EpisodePng")
                         .resizable()
                         .scaledToFit()
                 }
                     .frame(height: 200)
                     .padding(30)
-                Text(location.name)
+                Text(episode.name)
                     .font(.largeTitle)
                 VStack {
                     HStack {
@@ -33,33 +33,35 @@ struct LocationInformationView: View {
                     }
                     .padding()
                     List {
-                        Section(header: Text("Type")) {
-                            Text(location.type)
+                        Section(header: Text("Episode")) {
+                            Text(episode.episode)
                         }
-                        Section(header: Text("Dimension")) {
-                            Text(location.dimension)
+                        Section(header: Text("Air date")) {
+                            Text(episode.air_date)
                         }
                     }
                 }
                 .frame(height: 300)
                 VStack {
                     HStack {
-                        Text("Residents")
+                        Text("Cast")
                             .font(.title2.weight(.medium))
                             .foregroundColor(.primary.opacity(0.5))
                         Spacer()
                     }
                     .padding()
                     List {
-                        ForEach(locationViewModel.characters, id: \.id) { resident in
+                        ForEach(episodeViewModel.characters, id: \.id) { resident in
                             Section(header: Text("Resident name: \(resident.name)")) {
-                                Text("Resident status, species, gender: \(resident.status), \(resident.species), \(resident.gender)")
+                                HStack{
+                                    Text("Resident status, species, gender: \(resident.status), \(resident.species), \(resident.gender)")
+                                }
                             }
                         }
                     }
                     .onAppear {
-                        locationViewModel.characterUrls = location.residents
-                        locationViewModel.fetchCharacters()
+                        episodeViewModel.characterUrls = episode.characters
+                        episodeViewModel.fetchCharacters()
                     }
                 }
                 .frame(height: 400)

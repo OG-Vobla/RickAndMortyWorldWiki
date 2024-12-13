@@ -55,6 +55,19 @@ class NetworkManager {
         }
     }
     
+    func fetchEpisodes(page: Int, completion: @escaping ([EpisodeModel]?, Error?, Int?) -> Void) {
+        let url = "https://rickandmortyapi.com/api/episode?page=\(page)"
+        
+        AF.request(url).responseDecodable(of: EpisodeResponse.self) { response in
+            switch response.result {
+            case .success(let episodeResponse):
+                completion(episodeResponse.results, nil, episodeResponse.info.pages)
+            case .failure(let error):
+                completion(nil, error, nil)
+            }
+        }
+    }
+    
     func getCharacterInfo(characterUrl: [String], completion: @escaping (CharacterModel?, Error?) -> Void) {
         characterUrl.forEach { url in
             AF.request(url).responseDecodable(of: CharacterModel.self) { response in
@@ -84,4 +97,9 @@ struct CharacterResponse: Decodable {
 struct LocationResponse: Decodable {
     var info: ResponseInfo
     var results: [LocationInfoModel]
+}
+
+struct EpisodeResponse: Decodable {
+    var info: ResponseInfo
+    var results: [EpisodeModel]
 }
