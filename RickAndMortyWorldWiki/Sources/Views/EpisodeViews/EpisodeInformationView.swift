@@ -50,19 +50,25 @@ struct EpisodeInformationView: View {
                         Spacer()
                     }
                     .padding()
-                    List {
-                        ForEach(episodeViewModel.characters, id: \.id) { resident in
-                            Section(header: Text("Resident name: \(resident.name)")) {
-                                HStack{
-                                    Text("Resident status, species, gender: \(resident.status), \(resident.species), \(resident.gender)")
+                    if(episodeViewModel.isLoading)
+                    {
+                        ProgressView()
+                    }
+                    else{
+                        List {
+                            ForEach(episodeViewModel.characters, id: \.id) { resident in
+                                Section(header: Text("Resident name: \(resident.name)")) {
+                                    HStack{
+                                        Text("Resident status: \(resident.status), species: \(resident.species), gender: \(resident.gender)")
+                                    }
                                 }
                             }
                         }
                     }
-                    .onAppear {
-                        episodeViewModel.characterUrls = episode.characters
-                        episodeViewModel.fetchCharacters()
-                    }
+                }
+                .onAppear {
+                    episodeViewModel.characterUrls = episode.characters
+                    episodeViewModel.fetchCharacters()
                 }
                 .frame(height: 400)
             }

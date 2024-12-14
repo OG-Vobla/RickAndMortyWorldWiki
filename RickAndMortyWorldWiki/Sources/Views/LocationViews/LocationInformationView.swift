@@ -50,17 +50,23 @@ struct LocationInformationView: View {
                         Spacer()
                     }
                     .padding()
-                    List {
-                        ForEach(locationViewModel.characters, id: \.id) { resident in
-                            Section(header: Text("Resident name: \(resident.name)")) {
-                                Text("Resident status, species, gender: \(resident.status), \(resident.species), \(resident.gender)")
+                    if(locationViewModel.isLoading)
+                    {
+                        ProgressView()
+                    }
+                    else{
+                        List {
+                            ForEach(locationViewModel.characters, id: \.id) { resident in
+                                Section(header: Text("Resident name: \(resident.name)")) {
+                                    Text("Resident status: \(resident.status), species: \(resident.species), gender: \(resident.gender)")
+                                }
                             }
                         }
                     }
-                    .onAppear {
-                        locationViewModel.characterUrls = location.residents
-                        locationViewModel.fetchCharacters()
-                    }
+                }
+                .onAppear {
+                    locationViewModel.characterUrls = location.residents
+                    locationViewModel.fetchCharacters()
                 }
                 .frame(height: 400)
             }
